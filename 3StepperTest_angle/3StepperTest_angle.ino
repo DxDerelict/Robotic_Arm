@@ -23,14 +23,14 @@ boolean newData = false;
 ///////////////////////////////////////////////
 
 const uint8_t numOfSteppers = 5;
-AccelStepper stepper[numOfSteppers] = {
+AccelStepperWithDistance stepper[numOfSteppers] = {
   AccelStepperWithDistance(motorInterfaceType, BASE_STEP, BASE_PUL),
   AccelStepperWithDistance(motorInterfaceType, J1_STEP, J1_PUL),
   AccelStepperWithDistance(motorInterfaceType, J2_STEP, J2_PUL)
 };
 
 int motorMaxSpeed = 500;
-int motorSpeed = 200;
+int motorSpeed = 300;
 
 long positions[numOfSteppers] = {400, 400, 300, 400, 500};
 int stepperVal[numOfSteppers];
@@ -44,7 +44,13 @@ void setup() {
 
   for (int i = 0; i < numOfSteppers; i++) {
     stepper[i].setMaxSpeed(motorMaxSpeed);
+    stepper[i].setAcceleration(motorMaxSpeed);
   }
+
+  stepper[0].setMaxSpeed(300);
+  stepper[0].setAcceleration(300);
+  stepper[0].setStepsPerRotation(200);
+  stepper[0].setAnglePerRotation(68.9362);
   delay(500);
   motorTestRun();
 }
@@ -70,24 +76,20 @@ void runStepperSim() {
   Serial.print("Simultaneously Running to position... ");
 
   for (int i = 0; i < numOfSteppers; i++) {
-    positions[i] = stepperVal[i];
-  }
-
-  for (int i = 0; i < numOfSteppers; i++) {
-    stepper[i].moveTo(positions[i]);
-    stepper[i].setSpeed(motorSpeed);
+    stepper[i].moveToAngle(stepperVal[i]);
+    //    stepper[i].setSpeed(motorSpeed);
   }
 
   while ( (stepper[0].distanceToGo() != 0) || (stepper[1].distanceToGo() != 0) || (stepper[2].distanceToGo() != 0)) {
     for (int i = 0; i < numOfSteppers; i++) {
-      stepper[i].runSpeedToPosition();
+      stepper[i].run();
     }
   }
-
   for (int i = 0; i < numOfSteppers; i++) {
     stepper[i].setCurrentPosition(0);
   }
-  Serial.println("done");
+
+  Serial.print("done");
 }
 
 void motorTestRun() {
@@ -100,6 +102,9 @@ void motorTestRun() {
     while (stepper[i].distanceToGo() != 0) {
       stepper[i].runSpeedToPosition();
     }
+  }
+  for (int i = 0; i < numOfSteppers; i++) {
+    stepper[i].setCurrentPosition(0);
   }
   Serial.println("Initial Test Run Complete");
 }

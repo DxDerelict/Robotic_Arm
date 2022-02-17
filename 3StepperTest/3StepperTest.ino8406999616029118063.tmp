@@ -2,12 +2,12 @@
 #include <AccelStepperWithDistance.h>
 #define motorInterfaceType 1
 
-#define BASE_PUL 2
-#define BASE_STEP 3
-#define J1_PUL 4
-#define J1_STEP 5
-#define J2_PUL 6
-#define J2_STEP 7
+#define J1_PUL 2
+#define J1_STEP 3
+#define J2_PUL 4
+#define J2_STEP 5
+#define BASE_PUL 6
+#define BASE_STEP 7
 
 
 //  (motorInterfaceType, stepPin, dirPin)
@@ -22,17 +22,17 @@ char tempChars[numChars];
 boolean newData = false;
 ///////////////////////////////////////////////
 
-const uint8_t numOfSteppers = 5;
+uint8_t numOfSteppers = 5;
 AccelStepper stepper[numOfSteppers] = {
-  AccelStepperWithDistance(motorInterfaceType, BASE_STEP, BASE_PUL),
   AccelStepperWithDistance(motorInterfaceType, J1_STEP, J1_PUL),
-  AccelStepperWithDistance(motorInterfaceType, J2_STEP, J2_PUL)
+  AccelStepperWithDistance(motorInterfaceType, J2_STEP, J2_PUL),
+  AccelStepperWithDistance(motorInterfaceType, BASE_STEP, BASE_PUL)
 };
 
-int motorMaxSpeed = 500;
-int motorSpeed = 200;
+int motorMaxSpeed = 1000;
+int motorSpeed = 600;
 
-long positions[numOfSteppers] = {400, 400, 300, 400, 500};
+long positions[numOfSteppers] = {100, 200, 300, 400, 500};
 int stepperVal[numOfSteppers];
 
 
